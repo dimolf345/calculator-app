@@ -1,0 +1,70 @@
+@import "normalize";
+@import "variables";
+@import "themes";
+@import "utilities";
+
+//GENERAL STYLING
+
+html {
+  font-size: 62.5%;
+  font-weight: 700;
+  font-family: "League Spartan", sans-serif;
+}
+
+body {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.calculator {
+  margin: 0 auto;
+  width: 54rem;
+
+  // HEADER
+  &__header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: baseline;
+
+    h1 {
+      font-size: 3.2rem;
+    }
+
+    form {
+      display: flex;
+    }
+
+    fieldset {
+      border: none;
+    }
+  }
+
+  //DISPLAY
+  &__display {
+    padding: 4rem 3.2rem 3.6rem;
+    font-size: 5.2rem;
+    text-align: right;
+    border: 1px solid blacK;
+    border-radius: 10px;
+
+    h2 {
+      margin: 0;
+    }
+  }
+}
+
+.ts {
+  &__controls {
+    display: flex;
+    flex-direction: column-reverse;
+  }
+
+  &__label-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+  }
+}
