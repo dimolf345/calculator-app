@@ -1,3 +1,5 @@
+@import "variables";
+
 // Theme Dark
 $dark-bg: hsl(222, 26%, 31%);
 $dark-keypadbg: hsl(223, 31%, 20%);
@@ -41,3 +43,23 @@ $light-numkeyshadow: hsl(35, 11%, 61%);
 
 $light-textprimary: hsl(268, 47%, 21%);
 $light-textsecondary: hsl(290, 70%, 36%);
+
+html[data-theme="dark"] {
+  .button {
+    background-color: $dark-numkey;
+    box-shadow: inset 0px -4px 0px $dark-numkeyshadow;
+
+    &--delete,
+    &--reset {
+      background-color: $dark-delkey;
+      box-shadow: inset 0px -4px 0px $dark-delkeyshadow;
+      color: $dark-textprimary;
+    }
+
+    &--equal {
+      background-color: $dark-eqkey;
+      box-shadow: inset 0px -4px 0px $dark-eqkeyshadow;
+      color: $dark-textprimary;
+    }
+  }
+}

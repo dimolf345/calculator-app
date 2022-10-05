@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
   <head>
     <meta charset="UTF-8">
     <!-- displays site properly based on user's device -->
@@ -55,26 +55,30 @@
           </fieldset>
         </form>
       </header>
-      <section class="calculator__display">0</section>
+      <section class="calculator__display">
+        <span id="first">2</span>
+        <span id="operator">+</span>
+        <span id="second">5</span>
+      </section>
       <main class="calculator__keyboard">
-        <button>7</button>
-        <button>8</button>
-        <button>9</button>
-        <button>del</button>
-        <button>4</button>
-        <button>5</button>
-        <button>6</button>
-        <button>+</button>
-        <button>1</button>
-        <button>2</button>
-        <button>3</button>
-        <button>-</button>
-        <button>.</button>
-        <button>0</button>
-        <button>/</button>
-        <button>x</button>
-        <button>reset</button>
-        <button>=</button>
+        <button class="button">7</button>
+        <button class="button">8</button>
+        <button class="button">9</button>
+        <button class="button button--delete">del</button>
+        <button class="button">4</button>
+        <button class="button">5</button>
+        <button class="button">6</button>
+        <button class="button">+</button>
+        <button class="button">1</button>
+        <button class="button">2</button>
+        <button class="button">3</button>
+        <button class="button">-</button>
+        <button class="button">.</button>
+        <button class="button">0</button>
+        <button class="button">/</button>
+        <button class="button">x</button>
+        <button class="button button--reset">reset</button>
+        <button class="button button--equal">=</button>
       </main>
     </div>
     <script src="/index.8b3c27a1.js" defer=""></script>
