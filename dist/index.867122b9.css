@@ -152,6 +152,23 @@ template, [hidden] {
   display: none;
 }
 
+html[data-theme="dark"] body {
+  background-color: #3a4764;
+}
+
+html[data-theme="dark"] .calculator__keyboard {
+  background-color: #232c43;
+}
+
+html[data-theme="dark"] .calculator__display {
+  color: #fff;
+  background-color: #182034;
+}
+
+html[data-theme="dark"] .calculator__header {
+  color: #fff;
+}
+
 html[data-theme="dark"] .button {
   background-color: #eae3dc;
   box-shadow: inset 0 -4px #b4a597;
@@ -167,6 +184,99 @@ html[data-theme="dark"] .button--equal {
   color: #fff;
   background-color: #d03f2f;
   box-shadow: inset 0 -4px #93261a;
+}
+
+html[data-theme="dark"] .ts__input-container {
+  background-color: #182034;
+}
+
+html[data-theme="dark"] input[type="radio"]:checked {
+  background-color: #d03f2f;
+}
+
+html[data-theme="light"] body {
+  background-color: #e6e6e6;
+}
+
+html[data-theme="light"] .calculator__keyboard {
+  background-color: #d1cccc;
+}
+
+html[data-theme="light"] .calculator__display {
+  color: #35352c;
+  background-color: #ededed;
+}
+
+html[data-theme="light"] .calculator__header {
+  color: #35352c;
+}
+
+html[data-theme="light"] .button {
+  background-color: #e5e4e1;
+  box-shadow: inset 0 -4px #a69d91;
+}
+
+html[data-theme="light"] .button--delete, html[data-theme="light"] .button--reset {
+  color: #fff;
+  background-color: #377f86;
+  box-shadow: inset 0 -4px #1b5f65;
+}
+
+html[data-theme="light"] .button--equal {
+  color: #fff;
+  background-color: #ca5502;
+  box-shadow: inset 0 -4px #893901;
+}
+
+html[data-theme="light"] .ts__input-container {
+  background-color: #d1cccc;
+}
+
+html[data-theme="light"] input[type="radio"]:checked {
+  background-color: #ca5502;
+}
+
+html[data-theme="contrast"] body {
+  background-color: #160628;
+}
+
+html[data-theme="contrast"] .calculator {
+  color: #ffe53d;
+}
+
+html[data-theme="contrast"] .calculator__keyboard {
+  background-color: #1d0934;
+}
+
+html[data-theme="contrast"] .calculator__display {
+  color: #ffe53d;
+  background-color: #1d0934;
+}
+
+html[data-theme="contrast"] .button {
+  color: #ffe53d;
+  background-color: #341c4f;
+  box-shadow: inset 0 -4px #871c9c;
+}
+
+html[data-theme="contrast"] .button--delete, html[data-theme="contrast"] .button--reset {
+  color: #fff;
+  background-color: #58077d;
+  box-shadow: inset 0 -4px #bc15f4;
+}
+
+html[data-theme="contrast"] .button--equal {
+  color: #1b2428;
+  background-color: #00e0d1;
+  box-shadow: inset 0 -4px #6cf9f2;
+}
+
+html[data-theme="contrast"] .ts__input-container {
+  background-color: #1d0934;
+}
+
+html[data-theme="contrast"] input[type="radio"]:checked {
+  background-color: #00e0d1;
 }
 
 .sr-only {
@@ -222,25 +332,34 @@ body {
 }
 
 .calculator__header form {
+  align-items: center;
+  font-size: 1.2rem;
   display: flex;
+}
+
+.calculator__header form h2 {
+  text-transform: uppercase;
+  font-weight: normal;
+  font-size: inherit;
+  margin: 2.6rem 2.6rem .7rem;
 }
 
 .calculator__header fieldset {
   border: none;
+  padding: 0;
 }
 
 .calculator__display {
   text-align: right;
   box-sizing: border-box;
   max-height: 12.8rem;
-  border: 1px solid #000;
   border-radius: 10px;
   padding: 4rem 3.2rem 3.6rem;
   font-size: 5.2rem;
 }
 
 .calculator__keyboard {
-  background-color: #0ff;
+  border-radius: 10px;
   grid-template-columns: repeat(4, 1fr);
   gap: 2.5rem;
   margin-top: 2.4rem;
@@ -253,23 +372,66 @@ body {
   display: flex;
 }
 
-.ts__label-container {
+.ts__label-container, .ts__input-container {
+  width: 7rem;
   flex-direction: row;
   justify-content: space-around;
+  margin-bottom: 5px;
   display: flex;
 }
 
+.ts__input-container {
+  border-radius: 13px;
+  padding: 5px 0;
+}
+
 .button {
+  cursor: pointer;
   height: 6.4rem;
   text-transform: uppercase;
   border: none;
-  border-radius: 1rem;
+  border-radius: 10px;
   outline: none;
   font-size: 3.2rem;
+  transition: all .1s;
 }
 
 .button--reset, .button--equal {
   grid-column: span 2;
+}
+
+.button:hover {
+  filter: brightness(130%);
+}
+
+.button:active {
+  filter: brightness(130%);
+  transform: translateY(2px);
+}
+
+input[type="radio"] {
+  appearance: none;
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  transition: background-color .25s ease-out;
+}
+
+@media only screen and (max-width: 60rem) {
+  .calculator {
+    width: auto;
+    padding: 3rem 2.4rem;
+  }
+
+  .calculator__display {
+    max-height: 8.8rem;
+    padding: 2.9rem 2.4rem 2.2rem;
+  }
+
+  .calculator__keyboard {
+    gap: 1.3rem;
+    padding: 2.4rem;
+  }
 }
 
 /*# sourceMappingURL=index.867122b9.css.map */

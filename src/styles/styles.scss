@@ -36,10 +36,20 @@ body {
 
     form {
       display: flex;
+      font-size: 1.2rem;
+      align-items: center;
+
+      h2 {
+        text-transform: uppercase;
+        font-weight: normal;
+        font-size: inherit;
+        margin: $form-title-margin;
+      }
     }
 
     fieldset {
       border: none;
+      padding: 0;
     }
   }
 
@@ -48,15 +58,14 @@ body {
     padding: 4rem 3.2rem 3.6rem;
     font-size: 5.2rem;
     text-align: right;
-    border: 1px solid blacK;
-    border-radius: 10px;
+    border-radius: $app-border-radius;
     box-sizing: border-box;
     max-height: 12.8rem;
   }
 
   //KEYBOARD
   &__keyboard {
-    background-color: aqua;
+    border-radius: $app-border-radius;
     margin-top: 2.4rem;
     display: grid;
     grid-template-columns: repeat(4, 1fr);
@@ -71,24 +80,70 @@ body {
     flex-direction: column-reverse;
   }
 
-  &__label-container {
+  &__label-container,
+  &__input-container {
+    width: 7rem;
     display: flex;
     flex-direction: row;
     justify-content: space-around;
+    margin-bottom: 5px;
+  }
+
+  &__input-container {
+    border-radius: $radio-group-bradius;
+    padding: $radio-group-padding;
   }
 }
 
 //KEYBOARD BUTTONS
 .button {
+  cursor: pointer;
   height: $dekstop-keyboard-btn-height;
-  border-radius: 1rem;
+  border-radius: $app-border-radius;
   outline: none;
   border: none;
   font-size: $keyboard-font-size;
   text-transform: uppercase;
+  transition: all 0.1s ease;
 
   &--reset,
   &--equal {
     grid-column: span 2;
+  }
+
+  &:hover {
+    filter: brightness(130%);
+  }
+
+  &:active {
+    filter: brightness(130%);
+    transform: translateY(2px);
+  }
+}
+
+//CUSTOM RADIO BUTTONS
+input[type="radio"] {
+  appearance: none;
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  transition: background-color 0.25s ease-out;
+}
+
+//RESPONSIVE DESIGN
+@media only screen and (max-width: 60rem) {
+  .calculator {
+    width: auto;
+    padding: 3rem 2.4rem;
+
+    &__display {
+      max-height: $mobile-display-height;
+      padding: $mobile-display-padding;
+    }
+
+    &__keyboard {
+      gap: $mobile-keyboard-grid-gap;
+      padding: $mobile-keyboard-padding;
+    }
   }
 }

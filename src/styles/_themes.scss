@@ -31,20 +31,41 @@ $light-textprimary: hsl(60, 10%, 19%);
 $light-textsecondary: #ffffff;
 
 //Theme High-Contrast
-$constrast-bg: hsl(268, 75%, 9%);
-$light-keypadbg: hsl(268, 71%, 12%);
+$contrast-bg: hsl(268, 75%, 9%);
+$contrast-keypadbg: hsl(268, 71%, 12%);
 
-$light-delkey: hsl(281, 89%, 26%);
-$light-delkeyshadow: hsl(285, 91%, 52%);
-$light-eqkey: hsl(176, 100%, 44%);
-$light-eqkeyshadow: hsl(177, 92%, 70%);
-$light-numkey: hsl(45, 7%, 89%);
-$light-numkeyshadow: hsl(35, 11%, 61%);
+$contrast-delkey: hsl(281, 89%, 26%);
+$contrast-delkeyshadow: hsl(285, 91%, 52%);
+$contrast-eqkey: hsl(176, 100%, 44%);
+$contrast-eqkeyshadow: hsl(177, 92%, 70%);
+$contrast-numkey: hsl(268, 47%, 21%);
+$contrast-numkeyshadow: hsl(290, 70%, 36%);
 
-$light-textprimary: hsl(268, 47%, 21%);
-$light-textsecondary: hsl(290, 70%, 36%);
+$contrast-textprimary: hsl(52, 100%, 62%);
+$contrast-textsecondary: #ffffff;
+$contrast-texttertiary: hsl(198, 20%, 13%);
 
+//THEME DARK
 html[data-theme="dark"] {
+  body {
+    background-color: $dark-bg;
+  }
+
+  .calculator {
+    &__keyboard {
+      background-color: $dark-keypadbg;
+    }
+
+    &__display {
+      background-color: $dark-displaybg;
+      color: $dark-textprimary;
+    }
+
+    &__header {
+      color: $dark-textprimary;
+    }
+  }
+
   .button {
     background-color: $dark-numkey;
     box-shadow: inset 0px -4px 0px $dark-numkeyshadow;
@@ -61,5 +82,106 @@ html[data-theme="dark"] {
       box-shadow: inset 0px -4px 0px $dark-eqkeyshadow;
       color: $dark-textprimary;
     }
+  }
+  .ts__input-container {
+    background-color: $dark-displaybg;
+  }
+
+  input[type="radio"]:checked {
+    background-color: $dark-eqkey;
+  }
+}
+
+//THEME LIGHT
+html[data-theme="light"] {
+  body {
+    background-color: $light-bg;
+  }
+
+  .calculator {
+    &__keyboard {
+      background-color: $light-keypadbg;
+    }
+
+    &__display {
+      background-color: $light-displaybg;
+      color: $light-textprimary;
+    }
+
+    &__header {
+      color: $light-textprimary;
+    }
+  }
+
+  .button {
+    background-color: $light-numkey;
+    box-shadow: inset 0px -4px 0px $light-numkeyshadow;
+
+    &--delete,
+    &--reset {
+      background-color: $light-delkey;
+      box-shadow: inset 0px -4px 0px $light-delkeyshadow;
+      color: $light-textsecondary;
+    }
+
+    &--equal {
+      background-color: $light-eqkey;
+      box-shadow: inset 0px -4px 0px $light-eqkeyshadow;
+      color: $light-textsecondary;
+    }
+  }
+  .ts__input-container {
+    background-color: $light-keypadbg;
+  }
+
+  input[type="radio"]:checked {
+    background-color: $light-eqkey;
+  }
+}
+
+//THEME HIGH-CONTRAST
+
+html[data-theme="contrast"] {
+  body {
+    background-color: $contrast-bg;
+  }
+
+  .calculator {
+    color: $contrast-textprimary;
+
+    &__keyboard {
+      background-color: $contrast-keypadbg;
+    }
+
+    &__display {
+      background-color: $contrast-keypadbg;
+      color: $contrast-textprimary;
+    }
+  }
+
+  .button {
+    color: $contrast-textprimary;
+    background-color: $contrast-numkey;
+    box-shadow: inset 0px -4px 0px $contrast-numkeyshadow;
+
+    &--delete,
+    &--reset {
+      background-color: $contrast-delkey;
+      box-shadow: inset 0px -4px 0px $contrast-delkeyshadow;
+      color: $contrast-textsecondary;
+    }
+
+    &--equal {
+      background-color: $contrast-eqkey;
+      box-shadow: inset 0px -4px 0px $contrast-eqkeyshadow;
+      color: $contrast-texttertiary;
+    }
+  }
+  .ts__input-container {
+    background-color: $contrast-keypadbg;
+  }
+
+  input[type="radio"]:checked {
+    background-color: $contrast-eqkey;
   }
 }
