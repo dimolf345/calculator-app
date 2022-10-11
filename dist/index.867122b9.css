@@ -364,6 +364,7 @@ body {
   gap: 2.5rem;
   margin-top: 2.4rem;
   padding: 3.2rem;
+  font-size: 3.2rem;
   display: grid;
 }
 
@@ -392,7 +393,6 @@ body {
   border: none;
   border-radius: 10px;
   outline: none;
-  font-size: 3.2rem;
   transition: all .1s;
 }
 
@@ -426,11 +426,20 @@ input[type="radio"] {
   .calculator__display {
     max-height: 8.8rem;
     padding: 2.9rem 2.4rem 2.2rem;
+    font-size: 4rem;
   }
 
   .calculator__keyboard {
     gap: 1.3rem;
     padding: 2.4rem;
+  }
+
+  .button {
+    min-width: 6rem;
+  }
+
+  .button--reset, .button--equal, .button--delete {
+    font-size: 2rem;
   }
 }
 

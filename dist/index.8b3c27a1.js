@@ -532,7 +532,82 @@ function hmrAcceptRun(bundle, id) {
 }
 
 },{}],"dPB9w":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+var _themeHandler = require("./ThemeHandler");
+var _themeHandlerDefault = parcelHelpers.interopDefault(_themeHandler);
+const htmlDocument = document.querySelector("html");
+const appTheme = new (0, _themeHandlerDefault.default)(htmlDocument);
+appTheme.theme = "light";
 
-},{}]},["1OSsZ","dPB9w"], "dPB9w", "parcelRequire7495")
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","./ThemeHandler":"iB2eH"}],"gkKU3":[function(require,module,exports) {
+exports.interopDefault = function(a) {
+    return a && a.__esModule ? a : {
+        default: a
+    };
+};
+exports.defineInteropFlag = function(a) {
+    Object.defineProperty(a, "__esModule", {
+        value: true
+    });
+};
+exports.exportAll = function(source, dest) {
+    Object.keys(source).forEach(function(key) {
+        if (key === "default" || key === "__esModule" || dest.hasOwnProperty(key)) return;
+        Object.defineProperty(dest, key, {
+            enumerable: true,
+            get: function() {
+                return source[key];
+            }
+        });
+    });
+    return dest;
+};
+exports.export = function(dest, destName, get) {
+    Object.defineProperty(dest, destName, {
+        enumerable: true,
+        get: get
+    });
+};
+
+},{}],"iB2eH":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+class ThemeHandler {
+    //1. retrieves the preferred setting from local storage or from user agent prefers color scheme
+    //2. set the theme accordingly
+    //3. save selected theme to localStorage
+    availableThemes = [
+        "dark",
+        "light",
+        "contrast"
+    ];
+    constructor(document){
+        this.currentTheme = this.getSavedThemeSetting || this.getPreferredColorScheme;
+        this.currentDocument = document;
+    }
+    set theme(newTheme) {
+        this.currentTheme = newTheme;
+        this.currentDocument.dataset.theme = newTheme;
+        this.saveThemeSetting(newTheme);
+    }
+    get theme() {
+        return this.currentTheme;
+    }
+    //Retrieves the user agent setting for preferred color scheme
+    getPreferredColorScheme() {
+        if (window.matchMedia && window.matchMedia("(prefers-color-scheme:dark)").matches) return "dark";
+        return "light";
+    }
+    saveThemeSetting(newTheme) {
+        window.localStorage.setItem("theme", newTheme);
+    }
+    getSavedThemeSetting() {
+        const savedTheme = window.localStorage.getItem("theme");
+        return savedTheme;
+    }
+}
+exports.default = ThemeHandler;
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}]},["1OSsZ","dPB9w"], "dPB9w", "parcelRequire7495")
 
 //# sourceMappingURL=index.8b3c27a1.js.map

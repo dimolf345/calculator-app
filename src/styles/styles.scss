@@ -55,12 +55,12 @@ body {
 
   //DISPLAY
   &__display {
-    padding: 4rem 3.2rem 3.6rem;
-    font-size: 5.2rem;
+    padding: $desktop-display-padding;
+    font-size: $desktop-display-font-size;
     text-align: right;
     border-radius: $app-border-radius;
     box-sizing: border-box;
-    max-height: 12.8rem;
+    max-height: $desktop-display-height;
   }
 
   //KEYBOARD
@@ -71,6 +71,7 @@ body {
     grid-template-columns: repeat(4, 1fr);
     gap: $desktop-keyboard-grid-gap;
     padding: $desktop-keyboard-padding;
+    font-size: $keyboard-font-size;
   }
 }
 
@@ -102,7 +103,6 @@ body {
   border-radius: $app-border-radius;
   outline: none;
   border: none;
-  font-size: $keyboard-font-size;
   text-transform: uppercase;
   transition: all 0.1s ease;
 
@@ -139,11 +139,21 @@ input[type="radio"] {
     &__display {
       max-height: $mobile-display-height;
       padding: $mobile-display-padding;
+      font-size: $mobile-display-font-size;
     }
 
     &__keyboard {
       gap: $mobile-keyboard-grid-gap;
       padding: $mobile-keyboard-padding;
+    }
+  }
+
+  .button {
+    min-width: $mobile-button-width;
+    &--reset,
+    &--equal,
+    &--delete {
+      font-size: 2rem;
     }
   }
 }
