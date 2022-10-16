@@ -14,8 +14,11 @@ appCalculator.receiveInput("4");
 appCalculator.receiveInput(".");
 appCalculator.receiveInput("1");
 appCalculator.receiveInput("5");
+appCalculator.receiveInput("+");
+appCalculator.receiveInput("4");
+
 setTimeout(() => {
-  appCalculator.pressCancel();
+  appCalculator.performCalculation();
 }, 2000);
 
 window.addEventListener("keydown", function (e) {
