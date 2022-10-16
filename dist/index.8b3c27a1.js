@@ -535,11 +535,25 @@ function hmrAcceptRun(bundle, id) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 var _themeHandler = require("./ThemeHandler");
 var _themeHandlerDefault = parcelHelpers.interopDefault(_themeHandler);
+var _calculator = require("./Calculator");
+var _calculatorDefault = parcelHelpers.interopDefault(_calculator);
 const htmlDocument = document.querySelector("html");
+const numberEls = document.querySelectorAll("span.number");
+const operatorEl = document.getElementById("operator");
 const appTheme = new (0, _themeHandlerDefault.default)(htmlDocument);
-appTheme.theme = "light";
+const appCalculator = new (0, _calculatorDefault.default)(numberEls, operatorEl);
+appCalculator.receiveInput("4");
+appCalculator.receiveInput(".");
+appCalculator.receiveInput("1");
+appCalculator.receiveInput("5");
+setTimeout(()=>{
+    appCalculator.pressCancel();
+}, 2000);
+window.addEventListener("keydown", function(e) {
+    console.log(e);
+});
 
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","./ThemeHandler":"iB2eH"}],"gkKU3":[function(require,module,exports) {
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","./ThemeHandler":"iB2eH","./Calculator":"atKJb"}],"gkKU3":[function(require,module,exports) {
 exports.interopDefault = function(a) {
     return a && a.__esModule ? a : {
         default: a
@@ -607,6 +621,74 @@ class ThemeHandler {
     }
 }
 exports.default = ThemeHandler;
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"atKJb":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+class Calculator {
+    //1. Initializes properties for first input, second input and operator
+    //2. Initializes references to html elements in order to render operators into the display
+    //3. Updates operators and display according to input provided by the app
+    //4. Performs the actual calculations
+    acceptedInputs = /[0-9/*\-+/c.]/;
+    isDecimal = false;
+    constructor(numbersRef, operatorRef){
+        this.numbersHTMLEls = numbersRef;
+        this.operatorHTMLEl = operatorRef;
+        this.resetCalculator();
+        this.updateDisplay();
+    }
+    handleNumberInput(input) {
+        const newInput = this.isDecimal ? "." + input : input;
+        const newNumber = Number(this.numbers[+this.isSecondNumberActive] + newInput);
+        this.numbers[+this.isSecondNumberActive] = newNumber;
+        this.isDecimal = false;
+        this.updateDisplay();
+    }
+    handleCommaPressed() {
+        if (this.isDecimal) return;
+        if (!Number.isInteger(this.numbers[+this.isSecondNumberActive])) return;
+        this.isDecimal = true;
+        this.numbersHTMLEls[+this.isSecondNumberActive].textContent += ".";
+    }
+    removeComma() {
+        this.numbersHTMLEls[+this.isSecondNumberActive].textContent = String(this.numbers[+this.isSecondNumberActive]);
+        this.isDecimal = false;
+    }
+    removeLastCharacter(index) {
+        const stringValue = String(this.numbers[index]);
+        this.numbers[index] = Number(stringValue.substring(0, stringValue.length - 1));
+    }
+    pressCancel() {
+        if (this.isDecimal) {
+            this.removeComma();
+            return;
+        }
+        if (this.operator && !this.isSecondNumberActive) this.operator = undefined;
+        else this.removeLastCharacter(+this.isSecondNumberActive);
+        this.updateDisplay();
+    }
+    updateDisplay() {
+        this.numbersHTMLEls.forEach((el, i)=>{
+            el.textContent = this.numbers[i]?.toLocaleString(navigator.language) || "";
+        });
+        this.operatorHTMLEl.textContent = this.operator || "";
+    }
+    resetCalculator() {
+        this.numbers = [
+            0,
+            null
+        ];
+        this.operator = undefined;
+        this.isSecondNumberActive = false;
+    }
+    receiveInput(input) {
+        if (!this.acceptedInputs.test(input)) return;
+        if (input === ".") this.handleCommaPressed();
+        if (/\d/.test(input)) this.handleNumberInput(input);
+    }
+}
+exports.default = Calculator;
 
 },{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}]},["1OSsZ","dPB9w"], "dPB9w", "parcelRequire7495")
 

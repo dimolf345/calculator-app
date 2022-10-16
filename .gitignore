@@ -25,3 +25,6 @@ node_modules
 
 #yarn.lock
 yarn.lock
+
+#dist files
+dist
