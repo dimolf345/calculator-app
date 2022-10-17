@@ -540,20 +540,53 @@ var _calculatorDefault = parcelHelpers.interopDefault(_calculator);
 const htmlDocument = document.querySelector("html");
 const numberEls = document.querySelectorAll("span.number");
 const operatorEl = document.getElementById("operator");
-const appTheme = new (0, _themeHandlerDefault.default)(htmlDocument);
-const appCalculator = new (0, _calculatorDefault.default)(numberEls, operatorEl);
-appCalculator.receiveInput("4");
-appCalculator.receiveInput(".");
-appCalculator.receiveInput("1");
-appCalculator.receiveInput("5");
-appCalculator.receiveInput("+");
-appCalculator.receiveInput("4");
-setTimeout(()=>{
-    appCalculator.performCalculation();
-}, 2000);
-window.addEventListener("keydown", function(e) {
-    console.log(e);
-});
+const calculatorBtns = document.querySelectorAll("main .button");
+// const appTheme = new ThemeHandler(htmlDocument);
+// const appCalculator = new Calculator(numberEls, operatorEl);
+// appCalculator.receiveInput("4");
+// appCalculator.receiveInput(".");
+// appCalculator.receiveInput("1");
+// appCalculator.receiveInput("5");
+// appCalculator.receiveInput("+");
+// appCalculator.receiveInput("4");
+// setTimeout(() => {
+//   appCalculator.performCalculation();
+// }, 2000);
+// window.addEventListener("keydown", function (e) {
+//   console.log(e);
+// });
+class App {
+    acceptedInputs = /[0-9/*\-+/c.]/;
+    constructor(btns){
+        this.appCalculator = new (0, _calculatorDefault.default)(numberEls, operatorEl);
+        this.appTheme = new (0, _themeHandlerDefault.default)(htmlDocument);
+        this.appBtns = btns;
+        this.createEventListeners();
+    }
+    simulateBtnPress(btnValue) {
+        const pressedBtn = [
+            ...this.appBtns
+        ].find((el)=>el.value === btnValue);
+        pressedBtn?.classList.add("pressed");
+        setTimeout(()=>{
+            pressedBtn?.classList.remove("pressed");
+        }, 100);
+    }
+    handleKeyboardInputs(e) {
+        if (!this.acceptedInputs.test(e.key)) return;
+        this.simulateBtnPress(e.key);
+        if (e.key === "Backspace") {
+            this.appCalculator.pressCancel();
+            return;
+        }
+        if (e.key === "c") this.appCalculator.resetCalculator();
+        else this.appCalculator.receiveInput(e.key);
+    }
+    createEventListeners() {
+        window.addEventListener("keydown", this.handleKeyboardInputs.bind(this));
+    }
+}
+const calculatorApp = new App(calculatorBtns);
 
 },{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","./ThemeHandler":"iB2eH","./Calculator":"atKJb"}],"gkKU3":[function(require,module,exports) {
 exports.interopDefault = function(a) {
@@ -628,11 +661,6 @@ exports.default = ThemeHandler;
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 class Calculator {
-    //1. Initializes properties for first input, second input and operator
-    //2. Initializes references to html elements in order to render operators into the display
-    //3. Updates operators and display according to input provided by the app
-    //4. Performs the actual calculations
-    acceptedInputs = /[0-9/*\-+/c.]/;
     constructor(numbersRef, operatorRef){
         this.numbersHTMLEls = numbersRef;
         this.operatorHTMLEl = operatorRef;
@@ -700,7 +728,6 @@ class Calculator {
                 result = this.numbers[0];
         }
         this.resetCalculator(result);
-        this.updateDisplay();
     }
     pressCancel() {
         this.removeLastCharacter();
@@ -718,9 +745,9 @@ class Calculator {
         ];
         this.operator = undefined;
         this.numberActive = false;
+        this.updateDisplay();
     }
     receiveInput(input) {
-        if (!this.acceptedInputs.test(input)) return;
         if (input === ".") {
             this.handleCommaPressed();
             return;

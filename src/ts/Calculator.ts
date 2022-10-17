@@ -6,7 +6,6 @@ export default class Calculator {
   //2. Initializes references to html elements in order to render operators into the display
   //3. Updates operators and display according to input provided by the app
   //4. Performs the actual calculations
-  private readonly acceptedInputs = /[0-9/*\-+/c.]/;
 
   private numbers: [number, number | null];
   private numbersHTMLEls: NumbersHTML;
@@ -105,7 +104,6 @@ export default class Calculator {
         result = this.numbers[0];
     }
     this.resetCalculator(result);
-    this.updateDisplay();
   }
 
   pressCancel(): void {
@@ -124,10 +122,10 @@ export default class Calculator {
     this.numbers = [result || 0, null];
     this.operator = undefined;
     this.numberActive = false;
+    this.updateDisplay();
   }
 
   receiveInput(input: string): void {
-    if (!this.acceptedInputs.test(input)) return;
     if (input === ".") {
       this.handleCommaPressed();
       return;

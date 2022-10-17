@@ -121,6 +121,12 @@ body {
   }
 }
 
+.pressed {
+  filter: brightness(130%);
+  transform: translateY(2px);
+  filter: brightness(130%);
+}
+
 //CUSTOM RADIO BUTTONS
 input[type="radio"] {
   appearance: none;

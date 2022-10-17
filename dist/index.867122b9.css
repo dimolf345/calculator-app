@@ -409,6 +409,12 @@ body {
   transform: translateY(2px);
 }
 
+.pressed {
+  filter: brightness(130%);
+  filter: brightness(130%);
+  transform: translateY(2px);
+}
+
 input[type="radio"] {
   appearance: none;
   width: 15px;
