@@ -1,4 +1,4 @@
-type Theme = typeof ThemeHandler.prototype.availableThemes[number];
+export type Theme = typeof ThemeHandler.prototype.availableThemes[number];
 
 class ThemeHandler {
   //1. retrieves the preferred setting from local storage or from user agent prefers color scheme
@@ -10,9 +10,8 @@ class ThemeHandler {
   private currentDocument: HTMLHtmlElement;
 
   constructor(document: HTMLHtmlElement) {
-    this.currentTheme =
-      this.getSavedThemeSetting || this.getPreferredColorScheme;
     this.currentDocument = document;
+    this.theme = this.getSavedThemeSetting() || this.getPreferredColorScheme();
   }
 
   set theme(newTheme: Theme) {
@@ -33,6 +32,13 @@ class ThemeHandler {
     )
       return "dark";
     return "light";
+  }
+
+  public nextTheme(): void {
+    const currentIndex = this.availableThemes.indexOf(this.currentTheme);
+    if (currentIndex === this.availableThemes.length - 1)
+      this.theme = this.availableThemes[0];
+    else this.theme = this.availableThemes[currentIndex + 1];
   }
 
   private saveThemeSetting(newTheme: Theme) {

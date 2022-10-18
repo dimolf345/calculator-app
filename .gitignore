@@ -27,4 +27,4 @@ node_modules
 yarn.lock
 
 #dist files
-dist
+dist/

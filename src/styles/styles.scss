@@ -12,6 +12,7 @@ html {
 }
 
 body {
+  transition: background-color 0.2s ease-in-out;
   height: 100vh;
   display: flex;
   flex-direction: column;
@@ -44,6 +45,7 @@ body {
         font-weight: normal;
         font-size: inherit;
         margin: $form-title-margin;
+        cursor: pointer;
       }
     }
 
@@ -61,6 +63,9 @@ body {
     border-radius: $app-border-radius;
     box-sizing: border-box;
     max-height: $desktop-display-height;
+    max-width: $desktop-diplay-width;
+    overflow-x: scroll;
+    overflow-y: hidden;
   }
 
   //KEYBOARD

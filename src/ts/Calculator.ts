@@ -49,15 +49,14 @@ export default class Calculator {
   private handleOperatorPressed(operator: Operator) {
     this.currentNum = Number(this.currentNumTextContent);
     if (this.numberActive === 0) {
-      this.operator = operator;
-      this.operatorHTMLEl.textContent = operator || "";
       this.numberActive = 1;
     } else {
       this.performCalculation();
       this.numberActive = 1;
-      this.operator = operator;
-      this.operatorHTMLEl.textContent = operator || "";
     }
+    this.operator = operator;
+    if (operator === "*") this.operatorHTMLEl.textContent = "x";
+    else this.operatorHTMLEl.textContent = operator || "";
   }
 
   private removeLastCharacter() {

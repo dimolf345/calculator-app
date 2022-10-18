@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <!-- displays site properly based on user's device -->
@@ -44,18 +44,12 @@
         <h1>calc</h1>
         <!-- Theme Selector (TS) -->
         <form class="ts" aria-label="theme-selector">
-          <h2>Theme</h2>
+          <h2 class="ts__title">Theme</h2>
           <fieldset>
             <legend class="sr-only">Theme selector</legend>
             <div class="ts__controls">
               <div class="ts__input-container">
-                <input
-                  type="radio"
-                  name="theme"
-                  id="theme-1"
-                  value="dark"
-                  checked
-                />
+                <input type="radio" name="theme" id="theme-1" value="dark" />
                 <input type="radio" name="theme" id="theme-2" value="light" />
                 <input
                   type="radio"
@@ -98,7 +92,7 @@
         <button class="button" value="/">/</button>
         <button class="button" value="*">x</button>
         <button class="button button--reset" value="c">reset</button>
-        <button class="button button--equal" value="result">=</button>
+        <button class="button button--equal" value="Enter">=</button>
       </main>
     </div>
     <script type="module" src="./ts/app.ts"></script>

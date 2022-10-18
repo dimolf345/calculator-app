@@ -541,27 +541,17 @@ const htmlDocument = document.querySelector("html");
 const numberEls = document.querySelectorAll("span.number");
 const operatorEl = document.getElementById("operator");
 const calculatorBtns = document.querySelectorAll("main .button");
-// const appTheme = new ThemeHandler(htmlDocument);
-// const appCalculator = new Calculator(numberEls, operatorEl);
-// appCalculator.receiveInput("4");
-// appCalculator.receiveInput(".");
-// appCalculator.receiveInput("1");
-// appCalculator.receiveInput("5");
-// appCalculator.receiveInput("+");
-// appCalculator.receiveInput("4");
-// setTimeout(() => {
-//   appCalculator.performCalculation();
-// }, 2000);
-// window.addEventListener("keydown", function (e) {
-//   console.log(e);
-// });
+const themeRadioInputs = document.querySelectorAll('input[name="theme"]');
+const themeSwitcher = document.querySelector("form h2");
 class App {
-    acceptedInputs = /[0-9/*\-+/c.]/;
-    constructor(btns){
+    constructor(btns, themeSelectors, themeSwitcher){
         this.appCalculator = new (0, _calculatorDefault.default)(numberEls, operatorEl);
         this.appTheme = new (0, _themeHandlerDefault.default)(htmlDocument);
         this.appBtns = btns;
+        this.appThemeSelectors = themeSelectors;
+        this.appThemeSwitcher = themeSwitcher;
         this.createEventListeners();
+        this.findCurrentTheme();
     }
     simulateBtnPress(btnValue) {
         const pressedBtn = [
@@ -572,8 +562,14 @@ class App {
             pressedBtn?.classList.remove("pressed");
         }, 100);
     }
-    handleKeyboardInputs(e) {
-        switch(e.key){
+    handleCalculatorInputs(e) {
+        let inputString;
+        if (e instanceof KeyboardEvent) {
+            inputString = e.key;
+            this.simulateBtnPress(e.key);
+        }
+        if (e instanceof MouseEvent && e.target instanceof HTMLButtonElement) inputString = e.target.value;
+        switch(inputString){
             case "Enter":
                 this.appCalculator.performCalculation();
                 break;
@@ -584,14 +580,34 @@ class App {
                 this.appCalculator.resetCalculator();
                 break;
             default:
-                this.appCalculator.receiveInput(e.key);
+                if (inputString.length !== 1) return;
+                this.appCalculator.receiveInput(inputString);
+        }
+    }
+    handleThemeSelect(e) {
+        this.appThemeSelectors.forEach((radioEl)=>radioEl.checked = false);
+        if (e.target instanceof HTMLInputElement) {
+            e.target.checked = true;
+            this.appTheme.theme = e.target.value;
         }
     }
     createEventListeners() {
-        window.addEventListener("keydown", this.handleKeyboardInputs.bind(this));
+        window.addEventListener("keydown", this.handleCalculatorInputs.bind(this));
+        this.appBtns.forEach((btn)=>btn.addEventListener("click", this.handleCalculatorInputs.bind(this)));
+        this.appThemeSelectors.forEach((radioEl)=>radioEl.addEventListener("change", this.handleThemeSelect.bind(this)));
+        this.appThemeSwitcher.addEventListener("click", this.changeTheme.bind(this));
+    }
+    findCurrentTheme() {
+        this.appThemeSelectors.forEach((radioEl)=>{
+            if (radioEl.value === this.appTheme.theme) radioEl.checked = true;
+        });
+    }
+    changeTheme() {
+        this.appTheme.nextTheme();
+        this.findCurrentTheme();
     }
 }
-const calculatorApp = new App(calculatorBtns);
+new App(calculatorBtns, themeRadioInputs, themeSwitcher);
 
 },{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","./ThemeHandler":"iB2eH","./Calculator":"atKJb"}],"gkKU3":[function(require,module,exports) {
 exports.interopDefault = function(a) {
@@ -636,8 +652,8 @@ class ThemeHandler {
         "contrast"
     ];
     constructor(document){
-        this.currentTheme = this.getSavedThemeSetting || this.getPreferredColorScheme;
         this.currentDocument = document;
+        this.theme = this.getSavedThemeSetting() || this.getPreferredColorScheme();
     }
     set theme(newTheme) {
         this.currentTheme = newTheme;
@@ -651,6 +667,11 @@ class ThemeHandler {
     getPreferredColorScheme() {
         if (window.matchMedia && window.matchMedia("(prefers-color-scheme:dark)").matches) return "dark";
         return "light";
+    }
+    nextTheme() {
+        const currentIndex = this.availableThemes.indexOf(this.currentTheme);
+        if (currentIndex === this.availableThemes.length - 1) this.theme = this.availableThemes[0];
+        else this.theme = this.availableThemes[currentIndex + 1];
     }
     saveThemeSetting(newTheme) {
         window.localStorage.setItem("theme", newTheme);
@@ -697,16 +718,14 @@ class Calculator {
     }
     handleOperatorPressed(operator) {
         this.currentNum = Number(this.currentNumTextContent);
-        if (this.numberActive === 0) {
-            this.operator = operator;
-            this.operatorHTMLEl.textContent = operator || "";
-            this.numberActive = 1;
-        } else {
+        if (this.numberActive === 0) this.numberActive = 1;
+        else {
             this.performCalculation();
             this.numberActive = 1;
-            this.operator = operator;
-            this.operatorHTMLEl.textContent = operator || "";
         }
+        this.operator = operator;
+        if (operator === "*") this.operatorHTMLEl.textContent = "x";
+        else this.operatorHTMLEl.textContent = operator || "";
     }
     removeLastCharacter() {
         if (this.currentNumTextContent.length === 1) {
