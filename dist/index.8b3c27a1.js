@@ -573,14 +573,19 @@ class App {
         }, 100);
     }
     handleKeyboardInputs(e) {
-        if (!this.acceptedInputs.test(e.key)) return;
-        this.simulateBtnPress(e.key);
-        if (e.key === "Backspace") {
-            this.appCalculator.pressCancel();
-            return;
+        switch(e.key){
+            case "Enter":
+                this.appCalculator.performCalculation();
+                break;
+            case "Backspace":
+                this.appCalculator.pressCancel();
+                break;
+            case "c":
+                this.appCalculator.resetCalculator();
+                break;
+            default:
+                this.appCalculator.receiveInput(e.key);
         }
-        if (e.key === "c") this.appCalculator.resetCalculator();
-        else this.appCalculator.receiveInput(e.key);
     }
     createEventListeners() {
         window.addEventListener("keydown", this.handleKeyboardInputs.bind(this));
@@ -661,6 +666,12 @@ exports.default = ThemeHandler;
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 class Calculator {
+    //1. Initializes properties for first input, second input and operator
+    //2. Initializes references to html elements in order to render operators into the display
+    //3. Updates operators and display according to input provided by the app
+    //4. Performs the actual calculations
+    acceptedInputs = /[0-9/*\-+/c.]/;
+    numberActive = 0;
     constructor(numbersRef, operatorRef){
         this.numbersHTMLEls = numbersRef;
         this.operatorHTMLEl = operatorRef;
@@ -668,16 +679,16 @@ class Calculator {
         this.updateDisplay();
     }
     set currentNum(value) {
-        this.numbers[+this.numberActive] = value;
+        this.numbers[this.numberActive] = value;
     }
     get currentNumTextContent() {
-        return this.numbersHTMLEls[+this.numberActive].textContent || "";
+        return this.numbersHTMLEls[this.numberActive].textContent || "";
     }
     set currentNumTextContent(newValue) {
         this.numbersHTMLEls[+this.numberActive].textContent = newValue;
     }
     handleNumberInput(input) {
-        if (this.currentNumTextContent.startsWith("0") || !this.currentNumTextContent) this.currentNumTextContent = input;
+        if (this.currentNumTextContent === "0" || !this.currentNumTextContent) this.currentNumTextContent = input;
         else this.currentNumTextContent += input;
     }
     handleCommaPressed() {
@@ -685,15 +696,16 @@ class Calculator {
         this.currentNumTextContent += ".";
     }
     handleOperatorPressed(operator) {
-        this.operator = operator;
         this.currentNum = Number(this.currentNumTextContent);
-        if (this.numberActive === true) {
-            console.log("perform calculation");
-            return;
-        } else {
-            this.numberActive = true;
+        if (this.numberActive === 0) {
+            this.operator = operator;
             this.operatorHTMLEl.textContent = operator || "";
-            this.currentNumTextContent = "0";
+            this.numberActive = 1;
+        } else {
+            this.performCalculation();
+            this.numberActive = 1;
+            this.operator = operator;
+            this.operatorHTMLEl.textContent = operator || "";
         }
     }
     removeLastCharacter() {
@@ -744,10 +756,11 @@ class Calculator {
             null
         ];
         this.operator = undefined;
-        this.numberActive = false;
+        this.numberActive = 0;
         this.updateDisplay();
     }
     receiveInput(input) {
+        if (!this.acceptedInputs.test(input)) return;
         if (input === ".") {
             this.handleCommaPressed();
             return;

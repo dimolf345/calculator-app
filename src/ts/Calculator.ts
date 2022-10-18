@@ -6,12 +6,13 @@ export default class Calculator {
   //2. Initializes references to html elements in order to render operators into the display
   //3. Updates operators and display according to input provided by the app
   //4. Performs the actual calculations
+  private readonly acceptedInputs: RegExp = /[0-9/*\-+/c.]/;
 
   private numbers: [number, number | null];
   private numbersHTMLEls: NumbersHTML;
   private operator: Operator;
   private operatorHTMLEl: HTMLSpanElement;
-  private numberActive: boolean;
+  private numberActive: 0 | 1 = 0;
 
   constructor(numbersRef: NumbersHTML, operatorRef: HTMLSpanElement) {
     this.numbersHTMLEls = numbersRef;
@@ -21,11 +22,11 @@ export default class Calculator {
   }
 
   private set currentNum(value: number) {
-    this.numbers[+this.numberActive] = value;
+    this.numbers[this.numberActive] = value;
   }
 
   private get currentNumTextContent(): string {
-    return this.numbersHTMLEls[+this.numberActive].textContent || "";
+    return this.numbersHTMLEls[this.numberActive].textContent || "";
   }
 
   private set currentNumTextContent(newValue: string) {
@@ -33,12 +34,11 @@ export default class Calculator {
   }
 
   private handleNumberInput(input: string): void {
-    if (
-      this.currentNumTextContent.startsWith("0") ||
-      !this.currentNumTextContent
-    )
+    if (this.currentNumTextContent === "0" || !this.currentNumTextContent)
       this.currentNumTextContent = input;
-    else this.currentNumTextContent += input;
+    else {
+      this.currentNumTextContent += input;
+    }
   }
 
   private handleCommaPressed(): void {
@@ -47,15 +47,16 @@ export default class Calculator {
   }
 
   private handleOperatorPressed(operator: Operator) {
-    this.operator = operator;
     this.currentNum = Number(this.currentNumTextContent);
-    if (this.numberActive === true) {
-      console.log("perform calculation");
-      return;
-    } else {
-      this.numberActive = true;
+    if (this.numberActive === 0) {
+      this.operator = operator;
       this.operatorHTMLEl.textContent = operator || "";
-      this.currentNumTextContent = "0";
+      this.numberActive = 1;
+    } else {
+      this.performCalculation();
+      this.numberActive = 1;
+      this.operator = operator;
+      this.operatorHTMLEl.textContent = operator || "";
     }
   }
 
@@ -121,11 +122,12 @@ export default class Calculator {
   resetCalculator(result?: number): void {
     this.numbers = [result || 0, null];
     this.operator = undefined;
-    this.numberActive = false;
+    this.numberActive = 0;
     this.updateDisplay();
   }
 
   receiveInput(input: string): void {
+    if (!this.acceptedInputs.test(input)) return;
     if (input === ".") {
       this.handleCommaPressed();
       return;

@@ -50,14 +50,19 @@ class App {
   }
 
   private handleKeyboardInputs(e: KeyboardEvent): void {
-    if (!this.acceptedInputs.test(e.key)) return;
-    this.simulateBtnPress(e.key);
-    if (e.key === "Backspace") {
-      this.appCalculator.pressCancel();
-      return;
+    switch (e.key) {
+      case "Enter":
+        this.appCalculator.performCalculation();
+        break;
+      case "Backspace":
+        this.appCalculator.pressCancel();
+        break;
+      case "c":
+        this.appCalculator.resetCalculator();
+        break;
+      default:
+        this.appCalculator.receiveInput(e.key);
     }
-    if (e.key === "c") this.appCalculator.resetCalculator();
-    else this.appCalculator.receiveInput(e.key);
   }
 
   private createEventListeners() {
