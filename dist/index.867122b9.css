@@ -312,6 +312,7 @@ body {
   height: 100vh;
   flex-direction: column;
   justify-content: center;
+  transition: background-color .2s ease-in-out;
   display: flex;
 }
 
@@ -341,6 +342,7 @@ body {
   text-transform: uppercase;
   font-weight: normal;
   font-size: inherit;
+  cursor: pointer;
   margin: 2.6rem 2.6rem .7rem;
 }
 
@@ -353,9 +355,12 @@ body {
   text-align: right;
   box-sizing: border-box;
   max-height: 12.8rem;
+  max-width: 54rem;
   border-radius: 10px;
   padding: 4rem 3.2rem 3.6rem;
   font-size: 5.2rem;
+  overflow-x: scroll;
+  overflow-y: hidden;
 }
 
 .calculator__keyboard {
@@ -405,6 +410,12 @@ body {
 }
 
 .button:active {
+  filter: brightness(130%);
+  transform: translateY(2px);
+}
+
+.pressed {
+  filter: brightness(130%);
   filter: brightness(130%);
   transform: translateY(2px);
 }

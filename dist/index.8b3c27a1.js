@@ -540,18 +540,74 @@ var _calculatorDefault = parcelHelpers.interopDefault(_calculator);
 const htmlDocument = document.querySelector("html");
 const numberEls = document.querySelectorAll("span.number");
 const operatorEl = document.getElementById("operator");
-const appTheme = new (0, _themeHandlerDefault.default)(htmlDocument);
-const appCalculator = new (0, _calculatorDefault.default)(numberEls, operatorEl);
-appCalculator.receiveInput("4");
-appCalculator.receiveInput(".");
-appCalculator.receiveInput("1");
-appCalculator.receiveInput("5");
-setTimeout(()=>{
-    appCalculator.pressCancel();
-}, 2000);
-window.addEventListener("keydown", function(e) {
-    console.log(e);
-});
+const calculatorBtns = document.querySelectorAll("main .button");
+const themeRadioInputs = document.querySelectorAll('input[name="theme"]');
+const themeSwitcher = document.querySelector("form h2");
+class App {
+    constructor(btns, themeSelectors, themeSwitcher){
+        this.appCalculator = new (0, _calculatorDefault.default)(numberEls, operatorEl);
+        this.appTheme = new (0, _themeHandlerDefault.default)(htmlDocument);
+        this.appBtns = btns;
+        this.appThemeSelectors = themeSelectors;
+        this.appThemeSwitcher = themeSwitcher;
+        this.createEventListeners();
+        this.findCurrentTheme();
+    }
+    simulateBtnPress(btnValue) {
+        const pressedBtn = [
+            ...this.appBtns
+        ].find((el)=>el.value === btnValue);
+        pressedBtn?.classList.add("pressed");
+        setTimeout(()=>{
+            pressedBtn?.classList.remove("pressed");
+        }, 100);
+    }
+    handleCalculatorInputs(e) {
+        let inputString;
+        if (e instanceof KeyboardEvent) {
+            inputString = e.key;
+            this.simulateBtnPress(e.key);
+        }
+        if (e instanceof MouseEvent && e.target instanceof HTMLButtonElement) inputString = e.target.value;
+        switch(inputString){
+            case "Enter":
+                this.appCalculator.performCalculation();
+                break;
+            case "Backspace":
+                this.appCalculator.pressCancel();
+                break;
+            case "c":
+                this.appCalculator.resetCalculator();
+                break;
+            default:
+                if (inputString.length !== 1) return;
+                this.appCalculator.receiveInput(inputString);
+        }
+    }
+    handleThemeSelect(e) {
+        this.appThemeSelectors.forEach((radioEl)=>radioEl.checked = false);
+        if (e.target instanceof HTMLInputElement) {
+            e.target.checked = true;
+            this.appTheme.theme = e.target.value;
+        }
+    }
+    createEventListeners() {
+        window.addEventListener("keydown", this.handleCalculatorInputs.bind(this));
+        this.appBtns.forEach((btn)=>btn.addEventListener("click", this.handleCalculatorInputs.bind(this)));
+        this.appThemeSelectors.forEach((radioEl)=>radioEl.addEventListener("change", this.handleThemeSelect.bind(this)));
+        this.appThemeSwitcher.addEventListener("click", this.changeTheme.bind(this));
+    }
+    findCurrentTheme() {
+        this.appThemeSelectors.forEach((radioEl)=>{
+            if (radioEl.value === this.appTheme.theme) radioEl.checked = true;
+        });
+    }
+    changeTheme() {
+        this.appTheme.nextTheme();
+        this.findCurrentTheme();
+    }
+}
+new App(calculatorBtns, themeRadioInputs, themeSwitcher);
 
 },{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","./ThemeHandler":"iB2eH","./Calculator":"atKJb"}],"gkKU3":[function(require,module,exports) {
 exports.interopDefault = function(a) {
@@ -596,8 +652,8 @@ class ThemeHandler {
         "contrast"
     ];
     constructor(document){
-        this.currentTheme = this.getSavedThemeSetting || this.getPreferredColorScheme;
         this.currentDocument = document;
+        this.theme = this.getSavedThemeSetting() || this.getPreferredColorScheme();
     }
     set theme(newTheme) {
         this.currentTheme = newTheme;
@@ -611,6 +667,11 @@ class ThemeHandler {
     getPreferredColorScheme() {
         if (window.matchMedia && window.matchMedia("(prefers-color-scheme:dark)").matches) return "dark";
         return "light";
+    }
+    nextTheme() {
+        const currentIndex = this.availableThemes.indexOf(this.currentTheme);
+        if (currentIndex === this.availableThemes.length - 1) this.theme = this.availableThemes[0];
+        else this.theme = this.availableThemes[currentIndex + 1];
     }
     saveThemeSetting(newTheme) {
         window.localStorage.setItem("theme", newTheme);
@@ -631,42 +692,76 @@ class Calculator {
     //3. Updates operators and display according to input provided by the app
     //4. Performs the actual calculations
     acceptedInputs = /[0-9/*\-+/c.]/;
-    isDecimal = false;
+    numberActive = 0;
     constructor(numbersRef, operatorRef){
         this.numbersHTMLEls = numbersRef;
         this.operatorHTMLEl = operatorRef;
         this.resetCalculator();
         this.updateDisplay();
     }
+    set currentNum(value) {
+        this.numbers[this.numberActive] = value;
+    }
+    get currentNumTextContent() {
+        return this.numbersHTMLEls[this.numberActive].textContent || "";
+    }
+    set currentNumTextContent(newValue) {
+        this.numbersHTMLEls[+this.numberActive].textContent = newValue;
+    }
     handleNumberInput(input) {
-        const newInput = this.isDecimal ? "." + input : input;
-        const newNumber = Number(this.numbers[+this.isSecondNumberActive] + newInput);
-        this.numbers[+this.isSecondNumberActive] = newNumber;
-        this.isDecimal = false;
-        this.updateDisplay();
+        if (this.currentNumTextContent === "0" || !this.currentNumTextContent) this.currentNumTextContent = input;
+        else this.currentNumTextContent += input;
     }
     handleCommaPressed() {
-        if (this.isDecimal) return;
-        if (!Number.isInteger(this.numbers[+this.isSecondNumberActive])) return;
-        this.isDecimal = true;
-        this.numbersHTMLEls[+this.isSecondNumberActive].textContent += ".";
+        if (this.currentNumTextContent.includes(".")) return;
+        this.currentNumTextContent += ".";
     }
-    removeComma() {
-        this.numbersHTMLEls[+this.isSecondNumberActive].textContent = String(this.numbers[+this.isSecondNumberActive]);
-        this.isDecimal = false;
+    handleOperatorPressed(operator) {
+        this.currentNum = Number(this.currentNumTextContent);
+        if (this.numberActive === 0) this.numberActive = 1;
+        else {
+            this.performCalculation();
+            this.numberActive = 1;
+        }
+        this.operator = operator;
+        if (operator === "*") this.operatorHTMLEl.textContent = "x";
+        else this.operatorHTMLEl.textContent = operator || "";
     }
-    removeLastCharacter(index) {
-        const stringValue = String(this.numbers[index]);
-        this.numbers[index] = Number(stringValue.substring(0, stringValue.length - 1));
-    }
-    pressCancel() {
-        if (this.isDecimal) {
-            this.removeComma();
+    removeLastCharacter() {
+        if (this.currentNumTextContent.length === 1) {
+            this.currentNumTextContent = "0";
             return;
         }
-        if (this.operator && !this.isSecondNumberActive) this.operator = undefined;
-        else this.removeLastCharacter(+this.isSecondNumberActive);
-        this.updateDisplay();
+        this.currentNumTextContent = this.currentNumTextContent.substring(0, this.currentNumTextContent.length - 1);
+    }
+    setSecondNum() {
+        if (!this.numbersHTMLEls[1].textContent && (this.operator === "*" || this.operator === "/")) this.numbers[1] = 1;
+        else if (!this.numbersHTMLEls[1].textContent && (this.operator === "+" || this.operator === "-")) this.numbers[1] = 0;
+        else this.numbers[1] = Number(this.currentNumTextContent);
+    }
+    performCalculation() {
+        let result;
+        this.setSecondNum();
+        switch(this.operator){
+            case "+":
+                result = this.numbers[0] + this.numbers[1];
+                break;
+            case "-":
+                result = this.numbers[0] - this.numbers[1];
+                break;
+            case "*":
+                result = this.numbers[0] * this.numbers[1];
+                break;
+            case "/":
+                result = this.numbers[0] / this.numbers[1];
+                break;
+            default:
+                result = this.numbers[0];
+        }
+        this.resetCalculator(result);
+    }
+    pressCancel() {
+        this.removeLastCharacter();
     }
     updateDisplay() {
         this.numbersHTMLEls.forEach((el, i)=>{
@@ -674,18 +769,26 @@ class Calculator {
         });
         this.operatorHTMLEl.textContent = this.operator || "";
     }
-    resetCalculator() {
+    resetCalculator(result) {
         this.numbers = [
-            0,
+            result || 0,
             null
         ];
         this.operator = undefined;
-        this.isSecondNumberActive = false;
+        this.numberActive = 0;
+        this.updateDisplay();
     }
     receiveInput(input) {
         if (!this.acceptedInputs.test(input)) return;
-        if (input === ".") this.handleCommaPressed();
-        if (/\d/.test(input)) this.handleNumberInput(input);
+        if (input === ".") {
+            this.handleCommaPressed();
+            return;
+        }
+        if (/\d/.test(input)) {
+            this.handleNumberInput(input);
+            return;
+        }
+        this.handleOperatorPressed(input);
     }
 }
 exports.default = Calculator;
