@@ -3,10 +3,10 @@
   "version": "1.0.0",
   "license": "MIT",
   "description": "Simple calculator project",
-  "main": "index.js",
   "author": "Luca Di Molfetta",
   "scripts": {
-    "start": "parcel src/index.html --open"
+    "start": "parcel src/index.html --open",
+    "build": "parcel build src/index.html"
   },
   "devDependencies": {
     "@parcel/transformer-sass": "2.7.0",
