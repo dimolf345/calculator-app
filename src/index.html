@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <!-- displays site properly based on user's device -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <base href="." />
     <link
       rel="icon"
       type="image/png"
@@ -18,7 +19,8 @@
       rel="stylesheet"
     />
     <!-- Styles -->
-    <link rel="stylesheet" href="./styles/styles.scss" />
+    <link rel="stylesheet" type="text/css" href="./styles/styles.scss" />
+    <script type="module" src="./ts/app.ts"></script>
     <title>Frontend Mentor | Calculator app</title>
 
     <!-- Feel free to remove these styles or customise in your own stylesheet 👍 -->
@@ -95,6 +97,5 @@
         <button class="button button--equal" value="Enter">=</button>
       </main>
     </div>
-    <script type="module" src="./ts/app.ts"></script>
   </body>
 </html>
