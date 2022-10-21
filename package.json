@@ -10,6 +10,7 @@
   },
   "devDependencies": {
     "@parcel/css": "^1.14.0",
+    "@parcel/transformer-css": "^2.7.0",
     "@parcel/transformer-sass": "2.7.0",
     "@typescript-eslint/eslint-plugin": "^5.38.1",
     "@typescript-eslint/parser": "^5.38.1",
