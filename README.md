@@ -57,5 +57,5 @@ I will surely write an other project with same level of difficulty to improve my
 ## Author
 
 - Website - [Luca Di Molfetta](https://www.linkedin.com/in/luca-di-molfetta-89659419a/)
-- Frontend Mentor - [@dimolf345](hhttps://www.frontendmentor.io/profile/dimolf345)
+- Frontend Mentor - [@dimolf345](https://www.frontendmentor.io/profile/dimolf345)
 - Github - [@dimolf345](https://github.com/dimolf345)
