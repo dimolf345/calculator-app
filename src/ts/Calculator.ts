@@ -5,6 +5,7 @@ export default class Calculator {
   private readonly acceptedInputs: RegExp = /[0-9/*\-+/c.]/;
 
   private numbers: [number, number | null];
+  private textNumbers: [string, string | null];
   private isDecimal: boolean;
   private numbersHTMLEls: NumbersHTML;
   private operator: Operator;
@@ -22,6 +23,14 @@ export default class Calculator {
     this.numbers[this.numberActive] = value;
   }
 
+  private set currentNumText(value: string) {
+    this.textNumbers[this.numberActive] = value;
+  }
+
+  private get currentNumText(): string {
+    return this.textNumbers[this.numberActive] || "";
+  }
+
   private get currentNumTextContent(): string {
     return this.numbersHTMLEls[this.numberActive].textContent || "";
   }
@@ -31,26 +40,23 @@ export default class Calculator {
   }
 
   private handleNumberInput(input: string): void {
-    if (this.currentNumTextContent === "0" || !this.currentNumTextContent)
-      this.currentNumTextContent = this.isDecimal ? "0." + input : input;
+    if (this.currentNumText === "0" || !this.currentNumText)
+      this.currentNumText = this.isDecimal ? "0." + input : input;
     else {
-      this.currentNumTextContent += input;
+      this.currentNumText += input;
     }
     if (this.isDecimal) this.isDecimal = false;
   }
 
   private handleCommaPressed(): void {
-    if (
-      this.currentNumTextContent.includes(".") &&
-      !this.currentNumTextContent.endsWith(".")
-    )
+    if (this.currentNumText.includes(".") && !this.currentNumText.endsWith("."))
       return;
     this.isDecimal = true;
-    this.currentNumTextContent += ".";
+    this.currentNumText += ".";
   }
 
   private handleOperatorPressed(operator: Operator) {
-    this.currentNum = Number(this.currentNumTextContent);
+    this.currentNum = Number(this.currentNumText);
     if (this.numberActive === 0) {
       this.operator = operator;
       this.numberActive = 1;
@@ -59,25 +65,27 @@ export default class Calculator {
       this.operator = operator;
       this.numberActive = 1;
     }
-    if (operator === "*") this.operatorHTMLEl.textContent = "x";
-    else this.operatorHTMLEl.textContent = operator || "";
   }
 
   private removeLastCharacter() {
-    if (this.currentNumTextContent.length === 1) {
-      this.currentNumTextContent = "0";
+    if (this.currentNumText.length === 1) {
+      this.currentNumText = "0";
       return;
     }
-    this.currentNumTextContent = this.currentNumTextContent.substring(
+    this.currentNumText = this.currentNumText.substring(
       0,
-      this.currentNumTextContent.length - 1
+      this.currentNumText.length - 1
     );
+  }
+
+  private convertToLocale(textNum: string | null) {
+    if (!textNum) return "";
+    return Number(textNum).toLocaleString(navigator.language);
   }
 
   performCalculation() {
     let result: number;
-    if (this.currentNumTextContent)
-      this.numbers[1] = Number(this.currentNumTextContent);
+    if (this.currentNumText) this.numbers[1] = Number(this.currentNumText);
     switch (this.operator) {
       case "+":
         result = this.numbers[0] + (this.numbers[1] || 0);
@@ -92,7 +100,7 @@ export default class Calculator {
         result = this.numbers[0] / (this.numbers[1] || 1);
         break;
       case undefined:
-        result = Number(this.currentNumTextContent);
+        result = Number(this.currentNumText);
         break;
       default:
         result = this.numbers[0];
@@ -102,18 +110,24 @@ export default class Calculator {
 
   pressCancel(): void {
     this.removeLastCharacter();
+    this.updateDisplay();
   }
 
   updateDisplay(): void {
-    this.numbersHTMLEls.forEach((el, i) => {
-      el.textContent =
-        this.numbers[i]?.toLocaleString(navigator.language) || "";
-    });
-    this.operatorHTMLEl.textContent = this.operator || "";
+    this.numbersHTMLEls[0].textContent = this.convertToLocale(
+      this.textNumbers[0]
+    );
+    this.numbersHTMLEls[1].textContent = this.convertToLocale(
+      this.textNumbers[1]
+    );
+    if (this.isDecimal) this.currentNumTextContent += ".";
+    if (this.operator === "*") this.operatorHTMLEl.textContent = "x";
+    else this.operatorHTMLEl.textContent = this.operator || "";
   }
 
-  resetCalculator(result?: number): void {
-    this.numbers = [result || 0, null];
+  resetCalculator(result = 0): void {
+    this.numbers = [result, null];
+    this.textNumbers = [String(result), ""];
     this.operator = undefined;
     this.numberActive = 0;
     this.isDecimal = false;
@@ -124,12 +138,15 @@ export default class Calculator {
     if (!this.acceptedInputs.test(input)) return;
     if (input === ".") {
       this.handleCommaPressed();
+      this.updateDisplay();
       return;
     }
     if (/\d/.test(input)) {
       this.handleNumberInput(input);
+      this.updateDisplay();
       return;
     }
     this.handleOperatorPressed(input as Operator);
+    this.updateDisplay();
   }
 }
