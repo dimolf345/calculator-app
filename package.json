@@ -5,8 +5,8 @@
   "description": "Simple calculator project",
   "author": "Luca Di Molfetta",
   "scripts": {
-    "start": "parcel src/index.html --open",
-    "build": "parcel build src/index.html"
+    "start": "parcel ./src/index.html --open",
+    "build": "parcel build ./src/index.html"
   },
   "devDependencies": {
     "@parcel/transformer-sass": "2.7.0",
